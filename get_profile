@@ -1,0 +1,26 @@
+import urlparse
+import facebook
+import urllib3.request
+def main():
+  access_token = get_access_token()
+  graph = facebook.GraphAPI(access_token)
+  resp = graph.get_object('me')
+  print resp
+
+def get_access_token():
+ APPID='VALUE'
+ APPSECRET='VALUE'
+ ACCESSTOKEN='VALUE'
+ http = urllib3.PoolManager()
+ response= http.request('GET','https://graph.facebook.com/oauth/access_token?client_id=%s&client_secret=%s&grant_type=fb_exchange_token&fb_exchange_token=%s' % (APPID,APPSECRET,ACCESSTOKEN))
+ print response.data
+ try:
+    oauth_access_token = urlparse.parse_qs(str(response.data))['access_token'][0]
+    print oauth_access_token
+ except KeyError:
+    print('Unable to grab an access token!')
+    exit()
+ return oauth_access_token
+
+if __name__ == "__main__":
+  main()
